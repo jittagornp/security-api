@@ -1,0 +1,5 @@
+projectKey=security-api
+serverUrl=http://localhost:9000
+dashboardUrl=http://localhost:9000/dashboard/index/security-api
+ceTaskId=AVRPX89UBG1Z8eIIrLBP
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AVRPX89UBG1Z8eIIrLBP
