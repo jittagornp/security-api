@@ -5,7 +5,7 @@ package com.pamarin.security.api.interceptor;
 
 import com.pamarin.security.api.AccessToken;
 import com.pamarin.security.api.annotation.Authorization;
-import com.pamarin.security.api.exception.AuthorizationException;
+import com.pamarin.security.api.exception.AuthenticationException;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,11 +35,7 @@ public class AccessTokenHandlerInterceptor extends HandlerInterceptorAdapter {
     private boolean dontHaveAnnotation(HandlerMethod handlerMethod) {
         Method method = handlerMethod.getMethod();
         Authorization authorization = method.getAnnotation(Authorization.class);
-        if (authorization == null) {
-            return true;
-        }
-
-        return false;
+        return authorization == null;
     }
 
     @Override
@@ -55,7 +51,7 @@ public class AccessTokenHandlerInterceptor extends HandlerInterceptorAdapter {
 
         String token = request.getHeader("x-auth-token");
         if (isEmpty(token)) {
-            throw new AuthorizationException("require access token.");
+            throw new AuthenticationException("require access token.");
         }
 
         request.setAttribute("principal", accessToken.verify(token));
