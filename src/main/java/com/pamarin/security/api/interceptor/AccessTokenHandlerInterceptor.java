@@ -28,25 +28,37 @@ public class AccessTokenHandlerInterceptor extends HandlerInterceptorAdapter {
         return token == null || token.isEmpty();
     }
 
+    private boolean isHandlerMethod(Object handler) {
+        return handler instanceof HandlerMethod;
+    }
+
+    private boolean dontHaveAnnotation(HandlerMethod handlerMethod) {
+        Method method = handlerMethod.getMethod();
+        Authorization authorization = method.getAnnotation(Authorization.class);
+        if (authorization == null) {
+            return true;
+        }
+
+        return false;
+    }
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        if (handler instanceof HandlerMethod) {
-            HandlerMethod handlerMethod = (HandlerMethod) handler;
-            Method method = handlerMethod.getMethod();
-            Authorization authorization = method.getAnnotation(Authorization.class);
-            if (authorization == null) {
-                return true;
-            }
-
-            String token = request.getHeader("x-auth-token");
-            if (isEmpty(token)) {
-                throw new AuthorizationException("require access token.");
-            }
-
-            request.setAttribute("principal", accessToken.verify(token));
+        if (!isHandlerMethod(handler)) {
+            return true;
         }
 
+        if (dontHaveAnnotation((HandlerMethod) handler)) {
+            return true;
+        }
+
+        String token = request.getHeader("x-auth-token");
+        if (isEmpty(token)) {
+            throw new AuthorizationException("require access token.");
+        }
+
+        request.setAttribute("principal", accessToken.verify(token));
         return true;
     }
 
