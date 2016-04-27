@@ -7,6 +7,7 @@ import com.pamarin.security.api.AccessToken;
 import com.pamarin.security.api.TokenMock;
 import com.pamarin.security.api.annotation.Authorization;
 import com.pamarin.security.api.config.AppConfig;
+import com.pamarin.security.api.exception.AuthenticationException;
 import com.pamarin.security.api.exception.AuthorizationException;
 import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
@@ -153,8 +154,8 @@ public class AccessTokenHandlerInterceptorTest {
 
     }
 
-    @Test(expected = AuthorizationException.class)
-    public void shouldBeThrowAuthorizationException_whenTokenIsNull_andAuthorizeMethod() throws Exception {
+    @Test(expected = AuthenticationException.class)
+    public void shouldBeThrowAuthenticationException_whenTokenIsNull_andAuthorizeMethod() throws Exception {
 
         HandlerMethod handlerMethod = Mockito.mock(HandlerMethod.class);
         Method method = getClass().getDeclaredMethod("authorizationMethod");
